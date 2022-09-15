@@ -1,0 +1,98 @@
+<!-- For Modal  -->
+<div class="modal fade" id="addModal" data-bs-backdrop="static">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">User Details</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" (click)="onClose()"></button>
+      </div>
+      <div class="modal-body">
+        <form [formGroup]="formData" (ngSubmit)="onSubmit()">
+          <div class="mb-3">
+            <label for="id" class="col-form-label">ID:</label>
+            <input type="text" id="id" class="form-control" formControlName="id" placeholder="Enter id"
+              (change)="idChange($event)">
+          </div>
+          <div *ngIf="formData.controls['id'].invalid && formData.controls['id'].touched">
+            <div *ngIf="formData.controls['id'].errors?.['required']" class="error-color">{{idRequired}}
+            </div>
+            <div *ngIf="formData.controls['id'].errors?.['pattern']" class="error-color">{{idInvalid}}
+            </div>
+            <div *ngIf="formData.controls['id'].errors?.['maxlength']" class="error-color">{{idMaxLength}}
+            </div>
+            <div *ngIf="formData.controls['id'].errors?.['idExist']" class="error-color">{{idAlreadyExist}}
+            </div>
+          </div>
+          <div class="mb-3">
+            <label for="name" class="col-form-label">Name:</label>
+            <input type="text" id="name" class="form-control" formControlName="name" placeholder="Enter Your Name">
+          </div>
+          <div *ngIf="formData.controls['name'].invalid && formData.controls['name'].touched">
+            <div *ngIf="formData.controls['name'].errors?.['required']" class="error-color">{{nameRequired}}
+            </div>
+          </div>
+          <div class="mb-3">
+            <label for="gender" class="col-form-label">Gender:</label>
+            <select class="form-select" formControlName="gender">
+              <option *ngFor="let gender of gendersOption" value={{gender}}>{{gender}}</option>
+            </select>
+          </div>
+          <div *ngIf="formData.controls['gender'].invalid && formData.controls['gender'].touched">
+            <div *ngIf="formData.controls['gender'].errors?.['required']" class="error-color">{{genderRequired}}
+            </div>
+          </div>
+          <div class="mb-3">
+            <label for="contact" class="col-form-label">Contact:</label>
+            <input type="text" id="contact" class="form-control" formControlName="contact" placeholder="xxx-xxx-xxxx">
+          </div>
+          <div *ngIf="(formData.controls['contact'].invalid && formData.controls['contact'].touched)">
+            <div *ngIf="formData.controls['contact'].errors?.['required']" class="error-color">{{contactRequired}}
+            </div>
+            <div *ngIf="formData.controls['contact'].errors?.['pattern']" class="error-color">{{contactPattern}}
+            </div>
+          </div>
+          <div class="mb-3">
+            <label for="address" class="col-form-label">Address:</label>
+            <textarea class="form-control" id="address" formControlName="address"></textarea>
+          </div>
+          <div *ngIf="formData.controls['address'].invalid && formData.controls['address'].touched">
+            <div *ngIf="formData.controls['address'].errors?.['required']" class="error-color">{{addressRequired}}
+            </div>
+          </div>
+          <button type="button" class="btn btn-secondary"
+            [disabled]="!formData.value.id && !formData.value.name && !formData.value.gender &&!formData.value.contact && !formData.value.address"
+            (click)="formData.reset()">Reset</button> &nbsp;
+          <button type="submit" class="btn btn-primary" [disabled]="!formData.valid" data-bs-dismiss="modal"
+            *ngIf="!isOnEdit">submit</button>
+          <button type="button" class="btn btn-primary"
+            [disabled]="!formData.valid || formData.pristine || updateDisable()" data-bs-dismiss="modal"
+            *ngIf="isOnEdit" (click)="onUpdate(formData.value)">Update</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+<br>
+
+<!-- Delete Modal  -->
+<div class="modal fade" id="deleteModal">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="deleteModal">Alert</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        Are you sure want to delete {{deleteName}}?
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+        <button type="button" class="btn btn-primary" data-bs-dismiss="modal"
+          (click)="onDelete(deleteIndex)">Delete</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<app-table [userRecords]="userData" (selectedFormValue)="onEdit($event)" (selectedRow)="getDeleteIndex($event)">
+</app-table>

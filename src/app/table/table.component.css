@@ -1,0 +1,27 @@
+.search-tag{
+    width: 90%;
+    border: 1px solid black;
+    border-radius: 3px;
+}
+
+.search-id{
+    width: 15%;
+}
+
+.search-name{
+    width: 20%;
+}
+
+.search-gender{
+    width: 10%;
+}
+
+.search-contact{
+    width: 25%;
+}
+
+.font-weight-light{
+    font-weight: lighter !important;
+}
+
+ 

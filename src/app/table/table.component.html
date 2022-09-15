@@ -1,0 +1,107 @@
+<div class="container">
+    <div class="d-flex justify-content-end">
+        <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addModal">Add
+            user</button>
+    </div>
+    <br>
+    <table class="table table-striped table-hover table-bordered">
+        <thead>
+            <tr>
+                <th colspan="7">
+                    <div>
+                        <input class="form-control w-25" type="text" id="globalsearch"
+                            placeholder="Search by Id, Name or Contact" [(ngModel)]="globalSearch">
+                    </div>
+                </th>
+            </tr>
+            <tr>
+                <th class="align-top">Sr. No.</th>
+                <th class="search-id align-top">Id
+                    <i class="bi bi-arrow-down-up" *ngIf="checkSortingKey != 'id'" (click)="checkSortingKey = 'id'"></i>
+                    <span *ngIf="checkSortingKey === 'id'">
+                        <i class="bi bi-sort-up-alt" (click)="sortId()" *ngIf="!orderId"></i>
+                        <i class="bi bi-sort-down-alt" (click)="sortId()" *ngIf="orderId"></i>
+                    </span>
+                    <input type="text" (keypress)="keyPressNumber($event)" placeholder="search Id" class="search-tag"
+                        name="id" [(ngModel)]="idSearch">
+                </th>
+                <th class="search-name align-top">Name
+                    <i class="bi bi-arrow-down-up" *ngIf="checkSortingKey != 'name'"
+                        (click)="checkSortingKey = 'name'"></i>
+                    <span *ngIf="checkSortingKey === 'name'">
+                        <i class="bi bi-sort-up-alt" (click)="sortName('name')" *ngIf="orderName"></i>
+                        <i class="bi bi-sort-down-alt" (click)="sortName('name')" *ngIf="!orderName"></i>
+                    </span>
+                    <input type="text" (keypress)="keyPressName($event)" placeholder="search name" class="search-tag"
+                        name="name" [(ngModel)]="nameSearch">
+                </th>
+                <th class="serach-gender align-top">Gender <select class="form-select form-select-sm"
+                        [(ngModel)]="genderSearch">
+                        <option value="">All</option>
+                        <option *ngFor="let gender of gendersOption" value={{gender}}>{{gender}}</option>
+                    </select></th>
+                <th class="search-contact align-top">Contact
+                    <i class="bi bi-arrow-down-up" *ngIf="checkSortingKey != 'contact'"
+                        (click)="checkSortingKey = 'contact'"></i>
+                    <span *ngIf="checkSortingKey === 'contact'">
+                        <i class="bi bi-sort-up-alt" (click)="sortContact()" *ngIf="!orderContact"></i>
+                        <i class="bi bi-sort-down-alt" (click)="sortContact()" *ngIf="orderContact"></i>
+                    </span>
+                    <input type="text" placeholder="search contact" class="serachTag" name="contact"
+                        [(ngModel)]="contactSearch">
+                </th>
+                <th class="align-top">Address
+                    <i class="bi bi-arrow-down-up" *ngIf="checkSortingKey != 'address'"
+                        (click)="checkSortingKey = 'address'"></i>
+                    <span *ngIf="checkSortingKey === 'address'">
+                        <i class="bi bi-sort-up-alt" (click)="sortName('address')" *ngIf="orderName"></i>
+                        <i class="bi bi-sort-down-alt" (click)="sortName('address')" *ngIf="!orderName"></i>
+                    </span>
+                <th class="align-top">Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr
+                *ngFor="let item of userRecords | searchFilter:globalSearch: idSearch: nameSearch: contactSearch | paginate:page | individualsearch: idSearch: nameSearch: contactSearch | genderFilter:genderSearch let i=index">
+                <td>{{(page.currentPage-1)*page.itemsPerPage + i + 1}}</td>
+                <td>{{this.item.id}}</td>
+                <td>{{this.item.name }}</td>
+                <td>{{this.item.gender}}</td>
+                <td>{{this.item.contact}}</td>
+                <td>{{this.item.address}}</td>
+                <!-- (click)="onDelete((page.currentPage - 1) * page.itemsPerPage + i)" -->
+                <td><button class="btn btn-danger" (click)="sendIndex((page.currentPage - 1) * page.itemsPerPage + i)"
+                        data-bs-toggle="modal" data-bs-target="#deleteModal">Delete</button> &nbsp;
+                    <button class="btn btn-primary" (click)="onEdit(item)" data-bs-toggle="modal"
+                        data-bs-target="#addModal">Edit</button>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <hr>
+    <div class="d-flex justify-content-end">
+        <pagination-controls [id]="page.id!" [directionLinks]="directionLinks" [autoHide]="autoHide"
+            [responsive]="responsive" [previousLabel]="labels.previousLabel" [nextLabel]="labels.nextLabel"
+            (pageChange)="onPageChange($event)" (pageBoundsCorrection)="onPageBoundsCorrection($event)">
+        </pagination-controls>
+    </div>
+    <hr>
+    <div *ngIf="!globalSearch && !idSearch && !nameSearch && !contactSearch && !genderSearch">
+        <h5 class="d-flex justify-content-end">Total Record Count is {{this.userRecords.length}} and Page Row Count is
+            {{rowCount}}
+        </h5>
+    </div>
+    <div *ngIf="globalSearch && (globalSearch || idSearch || nameSearch || contactSearch || genderSearch)">
+        <h5 class="d-flex justify-content-end">Total Record Count is {{this.userRecords.length}} and Page Row Count is
+            {{(userRecords | searchFilter: globalSearch: idSearch: nameSearch:
+            contactSearch | genderFilter: genderSearch).slice((this.page.currentPage - 1)*this.page.itemsPerPage,
+            (this.page.currentPage*this.page.itemsPerPage)).length}}
+        </h5>
+    </div>
+    <div *ngIf="!globalSearch && (idSearch || nameSearch || contactSearch || genderSearch)">
+        <h5 class="d-flex justify-content-end">Total Record Count is {{this.userRecords.length}} and Page Row Count is
+            {{(userRecords | paginate:page | individualsearch: idSearch: nameSearch: contactSearch |
+            genderFilter:genderSearch).length}}
+        </h5>
+    </div>
+</div>
